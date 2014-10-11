@@ -1,6 +1,7 @@
 package spms.servlets;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +19,7 @@ public class LogOutServlet extends HttpServlet
     {
         HttpSession session = req.getSession();
         session.invalidate();
-        
-        resp.sendRedirect("login");
+
+        req.setAttribute("viewUrl", "redirect:login.do");
     }
 }

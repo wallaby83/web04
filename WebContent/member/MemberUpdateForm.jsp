@@ -10,14 +10,14 @@
 <body>
 <jsp:include page="/Header.jsp"/>
 
-<form action='update' method='post'>
+<form action='update.do' method='post'>
 번호: <input type='text' name='no' value='${member.no}' readonly><br>
 이름: <input type='text' name='name' value='${member.name}'><br>
 이메일: <input type='text' name='email' value='${member.email}'><br>
 가입일: ${member.createdDate}<br>
 <input type='submit' value='저장'>
-<input type='button' value='삭제' onclick='location.href="delete?no=${member.no}"'>
-<input type='button' value='취소' onclick='location.href="list";'>
+<input type='button' value='삭제' onclick='location.href="delete.do?no=${member.no}"'>
+<input type='button' value='취소' onclick='location.href="list.do";'>
 </form>
 
 <jsp:include page="/Tail.jsp"/>

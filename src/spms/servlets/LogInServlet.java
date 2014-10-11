@@ -2,7 +2,6 @@ package spms.servlets;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,8 +21,7 @@ public class LogInServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        RequestDispatcher rd = req.getRequestDispatcher("/auth/LogInForm.jsp");
-        rd.forward(req, resp);
+        req.setAttribute("viewUrl", "/auth/LogInForm.jsp");
     }
 
     @Override
@@ -43,20 +41,16 @@ public class LogInServlet extends HttpServlet
                 HttpSession session = req.getSession();
                 session.setAttribute("member", member);
 
-                resp.sendRedirect("../member/list");
+                req.setAttribute("viewUrl", "redirect:/member/list.do");
             }
             else
             {
-                RequestDispatcher rd = req.getRequestDispatcher("/auth/LogInFail.jsp");
-                rd.forward(req, resp);
+                req.setAttribute("viewUrl", "/auth/LogInFail.jsp");
             }
         }
         catch(Exception e)
         {
             throw new ServletException(e);
-        }
-        finally
-        {
         }
     }
 }

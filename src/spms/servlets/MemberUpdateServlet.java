@@ -3,7 +3,6 @@ package spms.servlets;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,23 +26,15 @@ public class MemberUpdateServlet extends HttpServlet
             ServletContext sc = this.getServletContext();
             MemberDao memberDao = (MemberDao)sc.getAttribute("memberDao");
 
-            int no = Integer.parseInt(request.getParameter("no"));
-            Member member = memberDao.selectOne(no);
+            Member member = memberDao.selectOne(Integer.parseInt(request.getParameter("no")));
 
             request.setAttribute("member", member);
-            RequestDispatcher rd = request.getRequestDispatcher("/member/MemberUpdateForm.jsp");
-            rd.forward(request, response);
 
+            request.setAttribute("viewUrl", "/member/MemberUpdateForm.jsp");
         }
         catch(Exception e)
         {
-            //throw new ServletException(e);
-            request.setAttribute("error", e);
-            RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-            rd.forward(request, response);
-        }
-        finally
-        {
+            throw new ServletException(e);
         }
     }
 
@@ -56,26 +47,14 @@ public class MemberUpdateServlet extends HttpServlet
             ServletContext sc = this.getServletContext();
             MemberDao memberDao = (MemberDao)sc.getAttribute("memberDao");
 
-            Member member = new Member();
-            member.setEmail(request.getParameter("email"));
-            member.setName(request.getParameter("name"));
-            member.setNo(Integer.parseInt(request.getParameter("no")));
-
+            Member member = (Member)request.getAttribute("member");
             memberDao.update(member);
 
-            response.sendRedirect("list");
-
+            request.setAttribute("viewUrl", "redirect:list.do");
         }
         catch(Exception e)
         {
-            //throw new ServletException(e);
-            request.setAttribute("error", e);
-            RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-            rd.forward(request, response);
-
-        }
-        finally
-        {
+            throw new ServletException(e);
         }
     }
 }
