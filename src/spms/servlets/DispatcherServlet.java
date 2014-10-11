@@ -1,14 +1,19 @@
 package spms.servlets;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import spms.controls.Controller;
+import spms.controls.MemberAddController;
+import spms.controls.MemberListController;
 import spms.vo.Member;
 
 @WebServlet("*.do")
@@ -23,19 +28,25 @@ public class DispatcherServlet extends HttpServlet
 
         try
         {
+            ServletContext sc = this.getServletContext();
+
+            HashMap<String, Object> model = new HashMap<String, Object>();
+            model.put("memberDao", sc.getAttribute("memberDao"));
+
             String pageControllerPath = null;
+            Controller pageController = null;
 
             if("/member/list.do".equals(servletPath))
             {
-                pageControllerPath = "/member/list";
+                pageController = new MemberListController();
             }
             else if("/member/add.do".equals(servletPath))
             {
-                pageControllerPath = "/member/add";
+                pageController = new MemberAddController();
 
                 if(request.getParameter("email") != null)
                 {
-                    request.setAttribute("member", new Member().setEmail(request.getParameter("email")).setPassword(request.getParameter("password")).setName(request.getParameter("name")));
+                    model.put("member", new Member().setEmail(request.getParameter("email")).setPassword(request.getParameter("password")).setName(request.getParameter("name")));
                 }
             }
             else if("/member/update.do".equals(servletPath))
@@ -60,10 +71,12 @@ public class DispatcherServlet extends HttpServlet
                 pageControllerPath = "/auth/logout";
             }
 
-            RequestDispatcher rd = request.getRequestDispatcher(pageControllerPath);
-            rd.include(request, response);
+            String viewUrl = pageController.execute(model);
 
-            String viewUrl = (String)request.getAttribute("viewUrl");
+            for(String key : model.keySet())
+            {
+                request.setAttribute(key, model.get(key));
+            }
 
             if(viewUrl.startsWith("redirect:"))
             {
@@ -72,7 +85,7 @@ public class DispatcherServlet extends HttpServlet
             }
             else
             {
-                rd = request.getRequestDispatcher(viewUrl);
+                RequestDispatcher rd = request.getRequestDispatcher(viewUrl);
                 rd.include(request, response);
             }
         }

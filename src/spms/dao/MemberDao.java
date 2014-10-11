@@ -13,6 +13,11 @@ import javax.sql.DataSource;
 import spms.vo.Member;
 
 
+/**
+ * @author Administrator
+ * context.xml에 추가
+ * <Resource name="jdbc/studydb" auth="Container" type="javax.sql.DataSource" maxActive="10" maxIdle="3" maxWait="10000" username="wallaby" password="wallaby" driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost:3307/studydb" closeMethod="close" />
+ */
 public class MemberDao
 {
     DataSource ds;
