@@ -12,8 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import spms.controls.Controller;
+import spms.controls.LogInController;
+import spms.controls.LogOutController;
 import spms.controls.MemberAddController;
+import spms.controls.MemberDeleteController;
 import spms.controls.MemberListController;
+import spms.controls.MemberUpdateController;
 import spms.vo.Member;
 
 @WebServlet("*.do")
@@ -32,8 +36,8 @@ public class DispatcherServlet extends HttpServlet
 
             HashMap<String, Object> model = new HashMap<String, Object>();
             model.put("memberDao", sc.getAttribute("memberDao"));
+            model.put("session", request.getSession());
 
-            String pageControllerPath = null;
             Controller pageController = null;
 
             if("/member/list.do".equals(servletPath))
@@ -51,24 +55,35 @@ public class DispatcherServlet extends HttpServlet
             }
             else if("/member/update.do".equals(servletPath))
             {
-                pageControllerPath = "/member/update";
+                pageController = new MemberUpdateController();
 
                 if(request.getParameter("email") != null)
                 {
-                    request.setAttribute("member", new Member().setNo(Integer.parseInt(request.getParameter("no"))).setEmail(request.getParameter("email")).setName(request.getParameter("name")));
+                    model.put("member", new Member().setNo(Integer.parseInt(request.getParameter("no"))).setEmail(request.getParameter("email")).setName(request.getParameter("name")));
+                }
+                else
+                {
+                    model.put("no", new Integer(request.getParameter("no")));
                 }
             }
             else if("/member/delete.do".equals(servletPath))
             {
-                pageControllerPath = "/member/delete";
+                pageController = new MemberDeleteController();
+
+                model.put("no", new Integer(request.getParameter("no")));
             }
             else if("/auth/login.do".equals(servletPath))
             {
-                pageControllerPath = "/auth/login";
+                pageController = new LogInController();
+
+                if(request.getParameter("email") != null)
+                {
+                    model.put("loginInfo", new Member().setEmail(request.getParameter("email")).setPassword(request.getParameter("password")));
+                }
             }
             else if("/auth/logout.do".equals(servletPath))
             {
-                pageControllerPath = "/auth/logout";
+                pageController = new LogOutController();
             }
 
             String viewUrl = pageController.execute(model);
