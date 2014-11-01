@@ -4,11 +4,20 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import spms.dao.MemberDao;
+import spms.dao.MySqlMemberDao;
 import spms.vo.Member;
 
 public class LogInController implements Controller
 {
+    MySqlMemberDao memberDao;
+
+    public LogInController setMemberDao(MySqlMemberDao memberDao)
+    {
+        this.memberDao = memberDao;
+        return this;
+    }
+
+
     @Override
     public String execute(Map<String, Object> model) throws Exception
     {
@@ -18,7 +27,7 @@ public class LogInController implements Controller
         }
         else
         {
-            MemberDao memberDao = (MemberDao)model.get("memberDao");
+            //MemberDao memberDao = (MemberDao)model.get("memberDao");
             Member loginInfo = (Member)model.get("loginInfo");
 
             Member member = memberDao.exist(loginInfo.getEmail(), loginInfo.getPassword());
