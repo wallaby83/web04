@@ -2,9 +2,10 @@ package spms.controls;
 
 import java.util.Map;
 
+import spms.bind.DataBinding;
 import spms.dao.MySqlMemberDao;
 
-public class MemberDeleteController implements Controller
+public class MemberDeleteController implements Controller, DataBinding
 {
     MySqlMemberDao memberDao;
 
@@ -14,15 +15,21 @@ public class MemberDeleteController implements Controller
         return this;
     }
 
+    @Override
+    public Object[] getDataBinders()
+    {
+        return new Object[] {"no", Integer.class};
+    }
+
 
     @Override
     public String execute(Map<String, Object> model) throws Exception
     {
-        //MemberDao memberDao = (MemberDao)model.get("memberDao");
         Integer no = (Integer)model.get("no");
 
         memberDao.delete(no);
 
         return "redirect:list.do";
     }
+
 }
