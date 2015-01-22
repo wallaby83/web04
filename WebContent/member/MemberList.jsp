@@ -20,6 +20,7 @@
         <a href="delete.do?no=${member.no}">[삭제]</a><br>
     </c:forEach>
 
+
 <jsp:include page="/Tail.jsp"/>
 </body>
 </html>
